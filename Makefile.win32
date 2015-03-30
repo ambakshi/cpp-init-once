@@ -1,0 +1,27 @@
+VSVER  = 12
+CFLAGS  = /FIvc_silly_warnings.h /D_USING_V110_SDK71_=1 /showIncludes /Zc:wchar_t /Zc:auto /EHa /RTCu /RTC1 /favor:AMD64 /Zi /W4 /Wall /DWINVER=0x0601 /DUNICODE=1 /D_DEBUG /MTd /wd4514 /wd4820 /wd4710 /wd4265 /wd4350 /wd4626 /wd4625
+LDFLAGS = /MACHINE:X64
+
+OBJS = main.obj
+EXE = main.exe
+
+ifeq ($(VSVER),14)
+	CFLAGS += /arch:AVX2
+endif
+
+all: main.exe
+
+-include main.d
+
+%.exe: %.obj
+	./vs$(VSVER) link /nologo $(LDFLAGS) $^ /out:$@
+
+
+%.obj: %.cpp
+	@echo "$@: \\" > $(*F).d
+	./vs$(VSVER) cl /nologo $(CFLAGS) /Fo$@ /c $< | sed -e 's/Note: including file: [ \t]*//g' | tr '\\' / | sed -Ee 's# #\\ #g' |  sed -Ee 's#$$# \\#g' >> $(*F).d
+
+
+clean:
+	rm -f $(OBJS) $(EXE) vc$(VSVER).pdb *.d *.pdb
+

@@ -1,0 +1,7 @@
+*.exe
+*.pdb
+*.obj
+*.map
+*.pch
+*.sbr
+*.d

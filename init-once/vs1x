@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Symlink vs12 to this file to get this script to
+# call VS120COMNTOOLS (ie, VS2013), or vs11, vs14, etc.
+#
+#
+VSVER="$(echo $(basename $0) | tr a-z A-Z)"
+VSVAR="${VSVER}0COMNTOOLS"
+if ! env | grep -q "$VSVAR"; then
+    echo >&2 "$VSVAR is not set"
+    exit 1
+fi
+if [ $# -eq 0 ]; then
+    echo >&2 "usage: $0 <vs compiler tools> <flags>"
+    echo >&2 "eg: $0 cl /c main.cpp /Fomain.obj"
+    echo >&2
+    exit 1
+fi
+
+BAT=/tmp/cl$$.bat
+cat > $BAT <<EOF
+@echo off
+call "%${VSVER}0COMNTOOLS%..\\..\\VC\\vcvarsall.bat" amd64 >NUL
+REM set INCLUDE=%$VSVAR%..\\..\\VC\\INCLUDE;%$VSVAR%..\\..\\VC\\ATLMFC\\INCLUDE;%ProgramFiles(x86)%/Microsoft SDKs/Windows/v7.1A/Include
+$@
+exit /b %ERRORLEVEL%
+EOF
+
+cmd.exe /c "$(cygpath -wa $BAT)"
+rc=$?
+if [ $rc -ne 0 ]; then
+    echo >&2 "** ERROR($rc): $BAT"
+    cat $BAT >&2
+fi
+rm -f $BAT
+exit $rc
