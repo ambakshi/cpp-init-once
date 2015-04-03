@@ -1,4 +1,4 @@
-## C++11 Examples
+# C++11 Examples
 
 Some examples I've made for myself as a reference, in particular the Makefiles
 (for Linux/OSX and Windows w/ Cygwin)
@@ -64,4 +64,12 @@ Example of C++11 atomic operations.
 Example of C++11 thread-safe static single initialization.
 Also contains Makefile and scripts to compile with VS11/12/14
 from within Cygwin.
+
+
+clang -std=c++11 -fms-compatibility -fms-extensions -fdelayed-template-parsing -c win32/sfile.cpp -I\"$(cygpath -wa \
+"/cygdrive/c/Program Files (x86)/Windows Kits/8.1/Include/um")\" -I\"$(cygpath -wa "/cygdrive/c/Program Files (x86)/Windows \
+Kits/8.1/Include/shared")\" -I\"$(cygpath -wa "$VS110COMNTOOLS..\\..\\VC\\include")\" -D_WIN64  -march=x86-64 -D_AMD64_ \
+-D_M_X64 -D_M_AMD64 -D_CRT_SECURE_NO_WARNINGS=1 -Wno-format -Wno-microsoft -Wno-ignored-attributes -Wno-missing-declarations \
+-Wno-int-to-void-pointer-cast -Wno-unused-value
+
 

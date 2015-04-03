@@ -1,18 +1,22 @@
 .PHONY: progs debug all run clean fmt install_hooks
 
-CXX=clang++
+UNAME_S:=$(shell uname -s |  cut -d'_' -f1)
+ifeq ($(UNAME_S),CYGWIN)
+sufexe=.exe
+endif
+CXX=clang
+LD=clang
 CXXFLAGS=-std=c++11
 CPPFLAGS=-MD -MF $*.d
 OPTFLAGS=-O3
-LD=clang
 LDFLAGS=-lstdc++
 
 lastword = $(if $(firstword $1),$(word $(words $1),$1))
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 PWD := $(shell pwd)
 
-PROGS=atomic/atomic init-once/init-once
-SOURCES=atomic/atomic.cpp init-once/init-once.cpp
+PROGS=atomic/atomic$(sufexe) init-once/init-oncei$(sufexe) win32/sfile$(sufexe)
+SOURCES=atomic/atomic.cpp init-once/init-once.cpp win32/sfile.cpp
 OBJS=$(patsubst %.cpp,%.o,$(SOURCES))
 DEPS=$(patsubst %.cpp,%.d,$(SOURCES))
 
@@ -37,10 +41,13 @@ install_hooks:
 
 -include $(DEPS)
 
-atomic/atomic: atomic/atomic.o
+atomic/atomic$(sufexe): atomic/atomic.o
 	$(LD) $(LDFLAGS) $^ -o $@
 
-init-once/init-once: init-once/init-once.o
+init-once/init-once$(sufexe): init-once/init-once.o
+	$(LD) $(LDFLAGS) $^ -o $@
+
+win32/sfile$(sufexe): win32/sfile.o
 	$(LD) $(LDFLAGS) $^ -o $@
 
 %.o: %.cpp
