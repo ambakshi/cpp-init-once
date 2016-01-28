@@ -1,10 +1,10 @@
 .PHONY: progs debug all run clean fmt install_hooks
 
-CXX=clang++
+CXX=/usr/bin/clang++
 CXXFLAGS=-std=c++11
 CPPFLAGS=-MD -MF $*.d
 OPTFLAGS=-O3
-LD=clang
+LD=/usr/bin/clang
 LDFLAGS=-lstdc++
 
 lastword = $(if $(firstword $1),$(word $(words $1),$1))
@@ -42,6 +42,10 @@ atomic/atomic: atomic/atomic.o
 
 init-once/init-once: init-once/init-once.o
 	$(LD) $(LDFLAGS) $^ -o $@
+
+filesystem/get_older_files.exe: filesystem/get_older_files.cpp 
+	cmd /c call "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat" amd64 && cl /await /EHs /TP $< /link /out:$@
+
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) -c $< -o $@

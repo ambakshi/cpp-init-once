@@ -65,3 +65,11 @@ Example of C++11 thread-safe static single initialization.
 Also contains Makefile and scripts to compile with VS11/12/14
 from within Cygwin.
 
+## filesystem
+
+Example of C++ standard filesystem operations. Finds files older than 48h in your
+C:\Windows\System32 directory. This also servers as a demo of yield/await added to
+VS2015SP1. 
+
+	# from cygwin
+	$ make filesystem/get_older_files.exe
